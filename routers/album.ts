@@ -44,7 +44,7 @@ albumRouter.post('/', imagesUpload.single('image'),async (req, res, next) => {
 
 albumRouter.get('/:id', async (req, res) => {
     try {
-        const album = await Album.findById(req.params.id);
+        const album = await Album.findById(req.params.id).populate('artist', 'name info');
 
         if (!album) {
             return res.status(404).json({ error: 'Album not found' });
