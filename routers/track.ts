@@ -8,19 +8,17 @@ const trackRouter = express.Router();
 
 trackRouter.get('/', async (req, res) => {
     try {
-        const albumId = req.query.album as string;
         const artistId = req.query.artist as string;
-        let tracks;
 
         if (artistId) {
-            tracks = await Album.find({ artist: artistId });
-        } else if (albumId) {
-            tracks = await Track.find({ album: albumId });
+            const albums = await Album.find({ artist: artistId });
+            const albumIds = albums.map(album => album._id);
+            const tracks = await Track.find({ album: albumIds });
+            res.send(tracks);
         } else {
-            tracks = await Track.find();
+            const tracks = await Track.find();
+            res.send(tracks);
         }
-
-        res.send(tracks);
     } catch (error) {
         console.error(error);
         res.status(500).send({ error: 'Internal Server Error' });
